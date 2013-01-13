@@ -1,3 +1,4 @@
+package huffman;
 
 public class HuffmanNode implements Comparable<HuffmanNode> {
 

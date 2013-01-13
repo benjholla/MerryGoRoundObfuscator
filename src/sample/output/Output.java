@@ -1,9 +1,11 @@
+package sample.output;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 
-public class Output2 {
+public class Output {
 
 	static FileInputStream si = null;
 	static FileOutputStream so = null;
@@ -13,6 +15,25 @@ public class Output2 {
 	static byte[] bi = new byte[1];
 	static byte[] bo = new byte[1];
 
+	
+	public static byte readByte() throws IOException {
+		if(ii == 0x80){
+			si.read(bi);
+			ii = 0;
+		}
+		return (byte)(bi[0] >> (ii+=bs));
+	}
+	
+	public static void writeByte(byte b) throws IOException {
+		ou += bs;
+		bo[0] = (byte)((byte)(bo[0] << bs) | b);
+		if(ou == 0x80){
+			so.write(bo[0]);
+			bo[0] = 0x00;
+			ou = 0;
+		}
+	}
+	
 	// args[0] = input stream
 	// args[1] = output stream
 	public static void main(String args[]) throws IOException {
@@ -24,25 +45,7 @@ public class Output2 {
 		so.close();
 	}
 
-	public static byte readByte() throws IOException {
-		if (ii == 0x80) {
-			si.read(bi);
-			ii = 0;
-		}
-		return (byte) (bi[0] >> (ii += bs));
-	}
-
-	public static void writeByte(byte b) throws IOException {
-		ou += bs;
-		bo[0] = (byte) ((byte) (bo[0] << bs) | b);
-		if (ou == 0x80) {
-			so.write(bo[0]);
-			bo[0] = 0x00;
-			ou = 0;
-		}
-	}
-
-	public static void m_10() throws IOException {
+	private static void m_10() throws IOException {
 		if (readByte() % 2 == 0) {
 			m_65_4();
 		} else {
@@ -50,12 +53,12 @@ public class Output2 {
 		}
 	}
 
-	public static void m_65_4() throws IOException {
+	private static void m_65_4() throws IOException {
 		byte b = (byte) 0x41;
 		writeByte(b);
 	}
 
-	public static void m_6() throws IOException {
+	private static void m_6() throws IOException {
 		if (readByte() % 2 == 0) {
 			m_66_3();
 		} else {
@@ -63,12 +66,12 @@ public class Output2 {
 		}
 	}
 
-	public static void m_66_3() throws IOException {
+	private static void m_66_3() throws IOException {
 		byte b = (byte) 0x42;
 		writeByte(b);
 	}
 
-	public static void m_3() throws IOException {
+	private static void m_3() throws IOException {
 		if (readByte() % 2 == 0) {
 			m_68_1();
 		} else {
@@ -76,12 +79,12 @@ public class Output2 {
 		}
 	}
 
-	public static void m_68_1() throws IOException {
+	private static void m_68_1() throws IOException {
 		byte b = (byte) 0x44;
 		writeByte(b);
 	}
 
-	public static void m_67_2() throws IOException {
+	private static void m_67_2() throws IOException {
 		byte b = (byte) 0x43;
 		writeByte(b);
 	}

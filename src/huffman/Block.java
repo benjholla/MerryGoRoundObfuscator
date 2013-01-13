@@ -1,10 +1,11 @@
+package huffman;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 public class Block {
 
-	int blockSize;
-	byte mask;
-	byte value;
+	public int blockSize;
+	public byte mask;
+	public byte value;
 
 	public Block(int blockSize) {
 		this.blockSize = blockSize;

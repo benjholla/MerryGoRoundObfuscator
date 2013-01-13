@@ -1,3 +1,4 @@
+package huffman;
 import java.io.BufferedOutputStream;
 import java.io.EOFException;
 import java.io.File;

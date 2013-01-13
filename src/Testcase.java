@@ -1,3 +1,7 @@
+import huffman.Block;
+import huffman.Huffman;
+import huffman.HuffmanTree;
+
 import java.io.File;
 import java.io.RandomAccessFile;
 import java.util.Map;
