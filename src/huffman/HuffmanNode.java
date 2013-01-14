@@ -48,7 +48,7 @@ public class HuffmanNode implements Comparable<HuffmanNode> {
 
 	@Override
 	public int compareTo(HuffmanNode node) {
-		if(this.value - node.value == 0 && block != null){
+		if(this.value - node.value == 0 && (this.block != null && node.block != null)){
 			return this.block.getValue() - node.block.getValue() ;
 		} else {
 			return this.value - node.value;
