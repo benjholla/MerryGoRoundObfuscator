@@ -86,6 +86,7 @@ public class Huffman {
 		while(raf.getFilePointer() < fileLength){
 			// read in a byte
 			in = raf.readByte();
+
 			// for each block size in the read in byte (1, 2, 4, and 8)
 			// create a Block and look up its corresponding binary string encoding
 			for(int i=8-tree.blockSize; i>=0; i-=tree.blockSize){
@@ -163,15 +164,15 @@ public class Huffman {
 	
 	// take a string of binary 1's and 0's and writes byte blocks out (does not write remainders)
 	private static String writeBytes(String out, BufferedOutputStream os) throws IOException {
-		byte b = 0x00;
 		while(out.length() >= 8){
+			byte b = 0x00;
 			int i = 0;
 			for(int j=7; j>=0; j--){
 				if(out.charAt(i++) == '1'){
 					b = Block.setBit(b, j);
 				}
 			}
-			
+						
 			// debug
 			//System.out.println("Writing: " + Block.byteToBinaryString(b) + " ("+ Block.byteToHexString(b) + ")");
 			
