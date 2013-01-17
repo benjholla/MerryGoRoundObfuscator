@@ -1,5 +1,11 @@
+import huffman.Block;
+import huffman.Huffman;
 import huffman.HuffmanNode;
 import huffman.HuffmanTree;
+
+import java.io.File;
+import java.util.LinkedList;
+import java.util.Map;
 
 
 public class MerryGoRound {
@@ -23,15 +29,27 @@ public class MerryGoRound {
 		}
 		*/
 		
+		File file = new File("/Users/benjholla/Desktop/huffman.txt");
+		int blockSize = 1;
+		
+		Map<Block, Integer> frequencies = Huffman.getBlockFrequencies(file, blockSize);
+		System.out.println("Block frequencies:\n" + frequencies + "\n");
+		
+		HuffmanTree tree = Huffman.getHuffmanTree(frequencies, blockSize);
+		
+		Map<Block,String> encodingKey = Huffman.getEncodingKey(tree);
+		System.out.println("Encoding key:\n" + encodingKey + "\n");
+		
+		int excess = Huffman.compress(file, new File(file.getAbsolutePath() + ".huff"), tree);
+		System.out.println("Excess: " + excess + "\n\n");
+		
 		// create call graph decoder
-		/*
 		framework(tree, blockSize);
-		dfs(tree.root);
-		*/
+		constructCallGraph(tree.root);
 	}
 	
-	// performs a DFS on the huffman tree 
-	public static void dfs(HuffmanNode node){
+	// performs a DFS on the huffman tree, while creating the call graph of the static decompressor
+	public static void constructCallGraph(HuffmanNode node){
 		startMethod(nodeToMethodName(node));
 		if(node.isLeaf()){
 			writeByte(node.getBlock().value);
@@ -42,10 +60,10 @@ public class MerryGoRound {
 		
 		
 		if(node.left != null){
-			dfs(node.left);
+			constructCallGraph(node.left);
 		}
 		if(node.right != null){
-			dfs(node.right);
+			constructCallGraph(node.right);
 		}
 	}
 	
@@ -123,10 +141,49 @@ public class MerryGoRound {
 	}
 	
 	public static String nodeToMethodName(HuffmanNode node){
-		if(node.getBlock() != null){
+		/*
+		// this works, but doesn't need to be this complicated
+		if(node.isLeaf()){
 			return "m_" + node.getBlock().value + "_" + node.value;
 		} else {
-			return "m_" + node.value;
+			return "m_" + node.value + "_" + getIndex(getRoot(node), node);
+		}
+		*/
+		
+		return "m_" + getIndex(getRoot(node), node);
+	}
+	
+	public static int getIndex(HuffmanNode root, HuffmanNode node){
+		LinkedList<HuffmanNode> queue = new LinkedList<HuffmanNode>();
+		queue.addLast(root);
+		return getIndex(node, 0, queue);
+	}
+	
+	// performs a BFS to find the node index
+	private static int getIndex(HuffmanNode node, int i, LinkedList<HuffmanNode> queue){
+		if(queue.isEmpty()){
+			return -1;
+		} else {
+			HuffmanNode current = queue.remove();
+			if(current.equals(node)){
+				return i;
+			} else {
+				if(current.left != null){
+					queue.addLast(current.left);
+				}
+				if(current.right != null){
+					queue.addLast(current.right);
+				}
+				return getIndex(node, ++i, queue);
+			}
+		}
+	}
+	
+	public static HuffmanNode getRoot(HuffmanNode node){
+		if(node.parent == null){
+			return node;
+		} else {
+			return getRoot(node.parent);
 		}
 	}
 
