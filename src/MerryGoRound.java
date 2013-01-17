@@ -165,7 +165,7 @@ public class MerryGoRound {
 			return -1;
 		} else {
 			HuffmanNode current = queue.remove();
-			if(current.equals(node)){
+			if(current.compareTo(node) == 0){
 				return i;
 			} else {
 				if(current.left != null){

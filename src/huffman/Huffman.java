@@ -27,7 +27,7 @@ public class Huffman {
 				// if block size is less than 8 we will have to parse multiple
 				// blocks out of the byte read from the file
 				for(int i=0; i<8; i+=blockSize){
-					addBlock(blockSize, frequencies, (byte)(b>>i));
+					addBlock(blockSize, frequencies, (byte)((b & 0xFF) >> i));
 				}
 			}
 		} catch (EOFException e){
@@ -90,7 +90,7 @@ public class Huffman {
 			// for each block size in the read in byte (1, 2, 4, and 8)
 			// create a Block and look up its corresponding binary string encoding
 			for(int i=8-tree.blockSize; i>=0; i-=tree.blockSize){
-				Block b = new Block(tree.blockSize, (byte)(in >> i));
+				Block b = new Block(tree.blockSize, (byte)((in & 0xFF) >> i));
 				
 				// debug
 				//System.out.println("Examining: " + Block.byteToBinaryString(in) + " ("+ Block.byteToHexString(in) + "), index: " + i + ", block: " + b.toString());
@@ -140,9 +140,9 @@ public class Huffman {
 			}
 			for(int i=7; i>=currentExcess; i--){
 				// debug
-				//System.out.println("Examining: " + Block.byteToBinaryString(in) + " ("+ Block.byteToHexString(in) + "), index: " + i + ", index mod2: " + (int)Math.abs((in >> i) % 2));
+				//System.out.println("Examining: " + Block.byteToBinaryString(in) + " ("+ Block.byteToHexString(in) + "), index: " + i + ", index mod2: " + (int)Math.abs(((in & 0xFF) >> i) % 2));
 				
-				if((in >> i) % 2 == 0){
+				if(((in & 0xFF) >> i) % 2 == 0){
 					current = current.left;
 				} else {
 					current = current.right;

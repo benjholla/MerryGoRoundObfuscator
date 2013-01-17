@@ -90,7 +90,7 @@ public class Block {
 	public static byte reverse(byte b){
 		byte result = 0x00;
 		for(int i=0; i<8; i++){
-			if((b >> i) % 2 != 0){
+			if(((b & 0xFF) >> i) % 2 != 0){
 				result |= (byte)(0x01 << (7-i));
 			}
 		}

@@ -54,15 +54,5 @@ public class HuffmanNode implements Comparable<HuffmanNode> {
 			return this.value - node.value;
 		}
 	}
-	
-	@Override
-	public boolean equals(Object obj){
-		if(obj instanceof HuffmanNode){
-			if(this.compareTo((HuffmanNode)obj) == 0){
-				return true;
-			}
-		}
-		return false;
-	}
 
 }
