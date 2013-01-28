@@ -3,12 +3,10 @@ import huffman.Huffman;
 import huffman.HuffmanNode;
 import huffman.HuffmanTree;
 
-import java.io.BufferedOutputStream;
 import java.io.File;
-import java.io.IOException;
-import java.io.RandomAccessFile;
 import java.util.LinkedList;
 import java.util.Map;
+import java.util.Scanner;
 
 
 public class MerryGoRound {
@@ -16,26 +14,51 @@ public class MerryGoRound {
 	// create a huffman like recursive structure with n methods
 	public static void main(String[] args) throws Exception {
 		
-		/*
 		// block size has to divide evenly into one byte
-		System.out.println("Block Size\n-----------------------");
+		System.out.println("Valid Block Sizes\n-----------------------");
 		for(int i=1; i<=8; i*=2){
-			System.out.println(i + " bit: n <= " + (int)Math.pow(2, i) + " methods");
+			System.out.println(i + " bit: n <= " + (int)Math.pow(2, i) + " leaf methods");
 		}
-		System.out.println("\nSelect a block size: ");
+
+		// get program parameters
+		Scanner scanner = new Scanner(System.in);
 		
-		/*
-		if(Math.IEEEremainder(8.0, (double)selectedBlockSize) == 0){
+		boolean validBlockSize = true;
+		int blockSize;
+		do {
+			System.out.print("\nSelect a block size: ");
+			blockSize = scanner.nextInt();
+			if(Math.IEEEremainder(8.0, (double)blockSize) == 0){
+				validBlockSize = true;
+			} else {
+				System.out.print("\nError: Invalid block size.");
+				validBlockSize = false;
+			}
+		} while(!validBlockSize);
 			
-		} else {
-			// invalid block size
-		}
-		*/
 		
-		File file = new File("/Users/benjholla/Desktop/huffman.txt");
-		int blockSize = 8;
+		boolean validFilePath = true;
+		File input = null;
+		do {
+			System.out.print("\nEnter path of file to encode: ");
+			scanner.nextLine(); // trash
+			try {
+				String line = scanner.nextLine();
+				input = new File(line);
+				if(!input.exists()){
+					throw new Exception("File does not exist.");
+				}
+			} catch (Exception e){
+				System.out.println("\nError: File path not valid.");
+				scanner.nextLine(); // trash
+				validFilePath = false;
+			}
+		} while(!validFilePath);
+
+		// print some encoder attributes
+		System.out.println("\n----------------Encoder Properties----------------\n");
 		
-		Map<Block, Integer> frequencies = Huffman.getBlockFrequencies(file, blockSize);
+		Map<Block, Integer> frequencies = Huffman.getBlockFrequencies(input, blockSize);
 		System.out.println("Block frequencies:\n" + frequencies + "\n");
 		
 		HuffmanTree tree = Huffman.getHuffmanTree(frequencies, blockSize);
@@ -43,14 +66,22 @@ public class MerryGoRound {
 		Map<Block,String> encodingKey = Huffman.getEncodingKey(tree);
 		System.out.println("Encoding key:\n" + encodingKey + "\n");
 		
-		int excess = Huffman.compress(file, new File(file.getAbsolutePath() + ".huff"), tree);
-		System.out.println("Excess: " + excess + "\n\n");
+		File output = new File(input.getAbsolutePath() + ".huff");
+		
+		int excess = Huffman.compress(input, output, tree);
+		
+		System.out.println("Payload Size: " + output.length() + " bytes");
+		System.out.println("Excess: " + excess + " bits");
 		
 		boolean useRecursion = false;
 		
+		System.out.println("\n----------------Begin Source----------------\n");
+		
 		// create call graph decoder
-		readFromFileFramework(tree, blockSize, file.length(), useRecursion);
+		readFromFileFramework(tree, blockSize, input.length(), useRecursion);
 		constructCallGraph(tree.root, useRecursion);
+		
+		System.out.println("\n----------------End Source----------------\n");
 	}
 	
 	// performs a DFS on the huffman tree, while creating the call graph of the static decompressor
