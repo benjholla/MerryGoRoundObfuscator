@@ -73,8 +73,28 @@ public class MerryGoRound {
 		System.out.println("Payload Size: " + output.length() + " bytes");
 		System.out.println("Excess: " + excess + " bits");
 		
-		boolean useRecursion = false;
+		// print some encoder attributes
+		System.out.println("\n----------------Obfuscation Options----------------\n");
 		
+		boolean validRecursionOption = true;
+		boolean useRecursion = false;
+		do {
+			System.out.println("Option: Recursively reconstruct payload.  Alternatively a while loop is used.");
+			System.out.println("Note: This may not be a workable option for large files as the stack may overflow.");
+			System.out.print("Use recursion? (y/n): ");
+			String line = scanner.nextLine();
+			if(line.toUpperCase().equals("Y") || line.toUpperCase().equals("YES")){
+				validRecursionOption = true;
+				useRecursion = true;
+			} else if(line.toUpperCase().equals("N") || line.toUpperCase().equals("NO")){
+				validRecursionOption = true;
+				useRecursion = false;
+			} else {
+				System.out.println("\nError: Invalid option, enter \"y\" or \"n\".");
+				validRecursionOption = false;
+			}
+		} while(!validRecursionOption);
+
 		System.out.println("\n----------------Begin Source----------------\n");
 		
 		// create call graph decoder
