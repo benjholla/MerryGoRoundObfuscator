@@ -5,7 +5,6 @@ import huffman.HuffmanTree;
 
 import java.io.BufferedOutputStream;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.util.LinkedList;
@@ -34,7 +33,7 @@ public class MerryGoRound {
 		*/
 		
 		File file = new File("/Users/benjholla/Desktop/huffman.txt");
-		int blockSize = 2;
+		int blockSize = 8;
 		
 		Map<Block, Integer> frequencies = Huffman.getBlockFrequencies(file, blockSize);
 		System.out.println("Block frequencies:\n" + frequencies + "\n");
@@ -50,7 +49,7 @@ public class MerryGoRound {
 		boolean useRecursion = false;
 		
 		// create call graph decoder
-		readFromFileFramework(tree, blockSize, useRecursion);
+		readFromFileFramework(tree, blockSize, file.length(), useRecursion);
 		constructCallGraph(tree.root, useRecursion);
 	}
 	
@@ -76,21 +75,23 @@ public class MerryGoRound {
 		}
 	}
 	
-	public static void readFromFileFramework(HuffmanTree tree, int blockSize, boolean useRecursion){
-		System.out.println("private static RandomAccessFile si = null;");
-		System.out.println("private static BufferedOutputStream so = null;");
-		System.out.println("private static int ii = 0;");
-		System.out.println("private static int oi = 0;");
+	public static void readFromFileFramework(HuffmanTree tree, int blockSize, long fileSize, boolean useRecursion){
+		System.out.println("private static RandomAccessFile is = null;");
+		System.out.println("private static BufferedOutputStream os = null;");
 		System.out.println("private static int bs = " + blockSize + ";");
+		System.out.println("private static int ii = -1;");
+		System.out.println("private static int oi = bs;");
 		System.out.println("private static byte[] bi = new byte[1];");
 		System.out.println("private static byte[] bo = new byte[1];");
+		System.out.println("private static long fs = " + fileSize + ";");
+		System.out.println("private static long fso = 0;");
 		System.out.println("");
 		
 		System.out.println("// args[0] = input stream");
 		System.out.println("// args[1] = output stream");
 		System.out.println("public static void main(String args[]) throws IOException {");
-		System.out.println("si = new RandomAccessFile(new File(args[0]), \"r\");");
-		System.out.println("so = new BufferedOutputStream(new FileOutputStream(new File(args[1])));");
+		System.out.println("is = new RandomAccessFile(new File(args[0]), \"r\");");
+		System.out.println("os = new BufferedOutputStream(new FileOutputStream(new File(args[1])));");
 		System.out.println("try {");
 		if(!useRecursion){
 			System.out.println("while(true){");
@@ -104,30 +105,33 @@ public class MerryGoRound {
 		System.out.println("// invalid checksum");
 		System.out.println("}");
 		System.out.println("finally {");
-		System.out.println("si.close();");
-		System.out.println("so.close();");
+		System.out.println("is.close();");
+		System.out.println("os.close();");
 		System.out.println("}");
 		System.out.println("}");
 		System.out.println("");
 
 		System.out.println("private static byte read() throws IOException {");
-		System.out.println("if (ii == 0) {");
-		System.out.println("bi[0] = si.readByte();");
-		System.out.println("ii = 8;");
+		System.out.println("if (ii < 0) {");
+		System.out.println("bi[0] = is.readByte();");
+		System.out.println("ii = 7;");
 		System.out.println("}");
-		System.out.println("byte result = (byte)((bi[0] & 0xFF) >> (ii-1));");
-		System.out.println("ii -= bs;");
-		System.out.println("return result;");
+		System.out.println("byte result = (byte) ((bi[0] & 0xFF) >> ii);");
+		System.out.println("ii--;");
+		System.out.println("return result;");		
 		System.out.println("}");
 		System.out.println("");
 		
 		System.out.println("private static void write(byte b) throws IOException {");
-		System.out.println("bo[0] = (byte)(bo[0] | (b << (7-oi)));");
+		System.out.println("if(fso < fs){");
+		System.out.println("bo[0] = (byte) (bo[0] | (b << (8 - oi)));");
 		System.out.println("oi += bs;");
-		System.out.println("if(oi == 8){");
-		System.out.println("so.write(bo[0]);");
+		System.out.println("if (oi > 8) {");
+		System.out.println("os.write(bo[0]);");
+		System.out.println("fso++;");
 		System.out.println("bo[0] = 0x00;");
-		System.out.println("oi = 0;");
+		System.out.println("oi = bs;");
+		System.out.println("}");
 		System.out.println("}");
 		System.out.println("}");
 		System.out.println("");	
@@ -188,7 +192,7 @@ public class MerryGoRound {
 			return -1;
 		} else {
 			HuffmanNode current = queue.remove();
-			if(current.compareTo(node) == 0){
+			if(current.isIdentical(node)){
 				return i;
 			} else {
 				if(current.left != null){

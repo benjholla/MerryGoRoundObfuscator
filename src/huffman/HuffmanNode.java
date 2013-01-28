@@ -8,6 +8,7 @@ public class HuffmanNode implements Comparable<HuffmanNode> {
 	public int value;
 	private Block block;
 	private boolean isLeaf;
+	private int id;
 
 	// used for leaves
 	public HuffmanNode(HuffmanNode parent, HuffmanNode left, HuffmanNode right, Block block, int value) {
@@ -17,6 +18,7 @@ public class HuffmanNode implements Comparable<HuffmanNode> {
 		this.block = block;
 		this.value = value;
 		this.isLeaf = true;
+		this.id = generateID();
 	}
 	
 	// used for branch nodes
@@ -27,6 +29,12 @@ public class HuffmanNode implements Comparable<HuffmanNode> {
 		this.block = null;
 		this.value = value;
 		this.isLeaf = false;
+		this.id = generateID();
+	}
+	
+	private static int idCounter = 0;
+	private int generateID(){
+		return idCounter++;
 	}
 	
 	public Block getBlock(){
@@ -53,6 +61,10 @@ public class HuffmanNode implements Comparable<HuffmanNode> {
 		} else {
 			return this.value - node.value;
 		}
+	}
+	
+	public boolean isIdentical(HuffmanNode node){
+		return this.id == node.id;
 	}
 
 }
