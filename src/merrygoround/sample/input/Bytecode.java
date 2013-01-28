@@ -1,4 +1,4 @@
-package sample.input;
+package merrygoround.sample.input;
 import java.net.URL;
 import java.net.URLConnection;
 

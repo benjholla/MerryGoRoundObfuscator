@@ -1,4 +1,4 @@
-package huffman;
+package merrygoround.huffman;
 
 public class HuffmanNode implements Comparable<HuffmanNode> {
 

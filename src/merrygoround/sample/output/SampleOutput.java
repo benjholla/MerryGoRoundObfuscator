@@ -1,4 +1,4 @@
-package sample.output;
+package merrygoround.sample.output;
 
 import java.io.BufferedOutputStream;
 import java.io.File;

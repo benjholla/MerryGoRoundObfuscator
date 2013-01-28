@@ -1,4 +1,4 @@
-package huffman;
+package merrygoround.huffman;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 public class Block {

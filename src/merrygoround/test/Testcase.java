@@ -1,10 +1,12 @@
-import huffman.Block;
-import huffman.Huffman;
-import huffman.HuffmanTree;
+package merrygoround.test;
 
 import java.io.File;
 import java.io.RandomAccessFile;
 import java.util.Map;
+
+import merrygoround.huffman.Block;
+import merrygoround.huffman.Huffman;
+import merrygoround.huffman.HuffmanTree;
 
 
 public class Testcase {

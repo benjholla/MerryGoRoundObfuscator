@@ -1,4 +1,4 @@
-package huffman;
+package merrygoround.huffman;
 import java.io.BufferedOutputStream;
 import java.io.EOFException;
 import java.io.File;
@@ -6,6 +6,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -191,4 +192,8 @@ public class Huffman {
 		}
 		return null;
 	}
+	
+
+	
+	
 }

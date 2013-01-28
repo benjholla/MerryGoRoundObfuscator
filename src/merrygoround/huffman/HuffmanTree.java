@@ -1,4 +1,5 @@
-package huffman;
+package merrygoround.huffman;
+import java.util.LinkedList;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.PriorityQueue;
@@ -44,6 +45,42 @@ public class HuffmanTree {
 		
 		// debug
 		//System.out.println("Root: " + root.value);
+	}
+	
+	//  performs a BFS to find the node index
+	public static int getIndex(HuffmanNode root, HuffmanNode node){
+		LinkedList<HuffmanNode> queue = new LinkedList<HuffmanNode>();
+		queue.addLast(root);
+		return getIndex(node, 0, queue);
+	}
+	
+	// private helper method for getIndex
+	private static int getIndex(HuffmanNode node, int i, LinkedList<HuffmanNode> queue){
+		if(queue.isEmpty()){
+			return -1;
+		} else {
+			HuffmanNode current = queue.remove();
+			if(current.isIdentical(node)){
+				return i;
+			} else {
+				if(current.left != null){
+					queue.addLast(current.left);
+				}
+				if(current.right != null){
+					queue.addLast(current.right);
+				}
+				return getIndex(node, ++i, queue);
+			}
+		}
+	}
+	
+	// returns the root for a Huffman tree of a starting from a particular node
+	public static HuffmanNode getRoot(HuffmanNode node){
+		if(node.parent == null){
+			return node;
+		} else {
+			return getRoot(node.parent);
+		}
 	}
 	
 }
